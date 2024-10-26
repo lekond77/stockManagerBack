@@ -1,12 +1,11 @@
 package com.leon.stock.service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.leon.stock.model.Product;
+import com.leon.stock.repository.ProductRepository;
 
 import lombok.Data;
 
@@ -14,17 +13,25 @@ import lombok.Data;
 @Service
 public class ProductService {
 
-	private List<Product> products;
-	
-	public ProductService() {
-		products = new ArrayList<Product>();
-		
-		products.add(new Product("bic", 1, 100 ));
-		products.add(new Product("crayon", 1, 50 ));
-		products.add(new Product("cahier", 2, 400 ));
+	@Autowired
+	private ProductRepository productRepository;
+
+	public Optional<Product> getProduct(final int id) {
+		return productRepository.findById(id);
+	}
+
+	public Iterable<Product> getProducts() {
+		return productRepository.findAll();
 	}
 	
-	public Iterator<Product> getProducts(){
-		return products.iterator();
+	public void deleteProduct(final int id) {
+		productRepository.deleteById(id);
 	}
+
+	public Product saveProduct(Product product) {
+		Product saveProduct = productRepository.save(product);
+		return saveProduct;
+	}
+	
+
 }
