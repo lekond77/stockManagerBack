@@ -24,11 +24,6 @@ public class ProductService {
 		products.add(new Product("cahier", 2, 400 ));
 	}
 	
-	
-//	public List<Product> getPs(){
-//		return products;
-//	}
-//	
 	public Iterator<Product> getProducts(){
 		return products.iterator();
 	}
