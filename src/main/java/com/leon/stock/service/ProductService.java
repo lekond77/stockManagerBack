@@ -29,8 +29,8 @@ public class ProductService {
 	}
 
 	public Product saveProduct(Product product) {
-		Product saveProduct = productRepository.save(product);
-		return saveProduct;
+		Product savedProduct = productRepository.save(product);
+		return savedProduct;
 	}
 	
 
