@@ -16,7 +16,6 @@ import com.leon.stock.model.Product;
 import com.leon.stock.service.ProductService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
 	@Autowired
@@ -71,6 +70,6 @@ public class ProductController {
 	
 	@DeleteMapping("/produit/{id}")
 	public void deleteProduct(@PathVariable("id") final int id) {
-		productService.deleteProduct(id);
+		productService.deleteProduct(id);	
 	}
 }
