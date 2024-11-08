@@ -2,6 +2,8 @@ package com.leon.stock.controller;
 
 import java.util.Optional;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.leon.stock.model.Product;
 import com.leon.stock.service.ProductService;
 
+
 @RestController
 public class ProductController {
 
@@ -26,7 +29,7 @@ public class ProductController {
 		return productService.getProducts();
 	}
 	
-
+	
 	@GetMapping("/produits/{id}")
 	public Optional<Product> getProduct(@PathVariable("id") final int id) {
 		
