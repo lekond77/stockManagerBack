@@ -1,13 +1,23 @@
 package com.leon.stock.model;
 
-//import org.springframework.security.core.GrantedAuthority;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-public enum Role  {
-    ADMIN,
-    USER;
 
-   // @Override
-    public String getAuthority() {
-        return this.name();
-    }
+@Entity
+@Table(name = "roles")
+public class Role  {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+
+	public String getName() {
+		return name;
+	}
 }

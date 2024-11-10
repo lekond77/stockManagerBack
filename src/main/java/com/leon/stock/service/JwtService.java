@@ -6,9 +6,7 @@ import java.time.temporal.ChronoUnit;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
@@ -17,11 +15,9 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
 	private JwtEncoder jwtEncoder;
-	private JwtDecoder jwtDecoder;
 
-	public JwtService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
+	public JwtService(JwtEncoder jwtEncoder) {
 		this.jwtEncoder = jwtEncoder;
-		this.jwtDecoder = jwtDecoder;
 	}
 
 	public String generateToken(Authentication authentication) {

@@ -1,12 +1,15 @@
 package com.leon.stock.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -22,10 +25,9 @@ public class User {
 	private String email;
 	@Column
 	private String password;
-
-	@Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role roles;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 
 	public int getId() {
 		return id;
@@ -46,12 +48,12 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public Role getRoles() {
+
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Role roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 

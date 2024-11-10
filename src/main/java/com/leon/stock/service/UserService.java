@@ -1,39 +1,39 @@
 package com.leon.stock.service;
 
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.leon.stock.model.User;
 import com.leon.stock.repository.UserRepository;
 	
-import lombok.Data;
 
 @Service
-@Data
-public class UserService {
+public class UserService implements UserDetailsService{
 
-	@Autowired
-	UserRepository userRepository;
+	
+	private UserRepository userRepository;
+	
+	public UserService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
-//	public Optional<User> login(User user) {
-//
-//		return userRepository.findById(user.getId());
-//	}
-//	
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
-
-	public User login(String username) {
-		User user = userRepository.findByEmail(username);
-		if (user != null /* && passwordEncoder.matches(password, user.getPassword()) */) {
-			System.out.println(user.getEmail());
-			return user;
-		}
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		return null;
+        User user = this.userRepository.findByEmail(username)
+        		.orElseThrow( () -> new UsernameNotFoundException("User not found"));
+                
+        Set<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
 	}
 }
