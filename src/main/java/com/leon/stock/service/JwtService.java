@@ -2,6 +2,7 @@ package com.leon.stock.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -22,11 +23,18 @@ public class JwtService {
 
 	public String generateToken(Authentication authentication) {
 		Instant now = Instant.now();
+			
+		String roles = authentication.getAuthorities().stream()
+				.map(grantedAuthority -> grantedAuthority.getAuthority())
+				.collect(Collectors.joining(","));
+			
 		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self")
 				.issuedAt(now)
+				//.claim("roles", roles)
 				.expiresAt(now.plus(1, ChronoUnit.DAYS))
-				.subject(authentication.getName()).build();
-		
+				.subject(authentication.getName())
+				.build();
+			
 		JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters
 				.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
 		
