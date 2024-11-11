@@ -1,9 +1,13 @@
 package com.leon.stock.filter;
 
 import java.io.IOException;
-
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,7 +23,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -31,7 +34,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		this.jwtDecoder = jwtDecoder;
 		this.userService = userService;
 	}
-	
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -40,25 +42,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			String token = authHeader.substring(7);
 			String username = extractUsername(token);
-			
-			
+
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+				UserDetails userDetails = userService.loadUserByUsername(username);
+
+				//Jwt jwt = jwtDecoder.decode(token);
 				
-				 UserDetails userDetails = userService.loadUserByUsername(username);
-				  
-		         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-		         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		         
+				//Set<GrantedAuthority> authorities = extractAuthorities(jwt);
+
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		}
 		filterChain.doFilter(request, response);
 	}
-	
-	
+
 	public String extractUsername(String token) {
-	    Jwt jwt = jwtDecoder.decode(token);
-	    return jwt.getSubject();
+		Jwt jwt = jwtDecoder.decode(token);
+		return jwt.getSubject();
 	}
-	
+
+	private Set<GrantedAuthority> extractAuthorities(Jwt jwt) {
+
+		String roles = jwt.getClaimAsString("roles");
+		return Arrays.stream(roles.split(",")).map(role -> new SimpleGrantedAuthority(role))
+				.collect(Collectors.toSet());
+	}
+
 }
