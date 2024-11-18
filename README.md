@@ -35,11 +35,11 @@ You can configure database settings in the application.properties file.
 - Maven (Build Tool)
 
 ## Clone the repository
-
-git clone git@github.com:lekond77/stockManagerBack.git
+  
+    ```bash
+    git clone git@github.com:lekond77/stockManagerBack.git
 
 Front-end repository available here : https://github.com/lekond77/stockManagerFront
-
 
 ## Description
 Ceci est la partie Backend de l'application StockManager, réalisée avec Spring Boot. 
@@ -75,6 +75,7 @@ Vous pouvez configurer les paramètres de la base de données dans le fichier ap
 - Maven (Outil de construction)
 
 ## Cloner le dépôt
-
-git clone git@github.com:lekond77/stockManagerBack.git
+    ```bash
+    git clone git@github.com:lekond77/stockManagerBack.git 
+    
 Le dépôt du Frontend est disponible ici : https://github.com/lekond77/stockManagerFront
