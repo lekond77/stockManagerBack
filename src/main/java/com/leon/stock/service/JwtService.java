@@ -2,6 +2,8 @@ package com.leon.stock.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -30,7 +32,7 @@ public class JwtService {
 			
 		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self")
 				.issuedAt(now)
-				//.claim("roles", roles)
+				.claim("roles", roles)
 				.expiresAt(now.plus(1, ChronoUnit.DAYS))
 				.subject(authentication.getName())
 				.build();
@@ -40,5 +42,4 @@ public class JwtService {
 		
 		return this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
 	}
-	
 }

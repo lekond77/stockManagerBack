@@ -42,15 +42,19 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults())
-				//.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
 						.requestMatchers("/", "/login").permitAll()
 						.requestMatchers("/produits").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
 						.requestMatchers(DELETE, "/produit/{id}").hasAuthority("ROLE_SUPER_ADMIN")
 						.anyRequest().authenticated())
 				.httpBasic(Customizer.withDefaults())
-				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+//				.oauth2ResourceServer((oauth2) -> oauth2
+//						.jwt((jwt) -> jwt.decoder(jwtDecoder())))
 				.addFilterBefore(new JwtAuthFilter(jwtDecoder(), userService), UsernamePasswordAuthenticationFilter.class)
+				.logout(logout -> logout
+						.clearAuthentication(true)
+						.permitAll())
 				.build();
 		
 	}
@@ -76,7 +80,7 @@ public class WebSecurityConfig {
 			throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
-
+	
 	@Bean
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

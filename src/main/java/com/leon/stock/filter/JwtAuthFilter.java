@@ -2,6 +2,7 @@ package com.leon.stock.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,11 +28,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 	private JwtDecoder jwtDecoder;
-
+	
+	
 	private UserService userService;
-
-	public JwtAuthFilter(JwtDecoder jwtDecoder, UserService userService) {
-		this.jwtDecoder = jwtDecoder;
+	
+	public JwtAuthFilter(JwtDecoder jwtDecoder,  UserService userService) {
+	 	this.jwtDecoder = jwtDecoder;
 		this.userService = userService;
 	}
 
@@ -46,13 +48,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
 				UserDetails userDetails = userService.loadUserByUsername(username);
-
-				//Jwt jwt = jwtDecoder.decode(token);
-				
-				//Set<GrantedAuthority> authorities = extractAuthorities(jwt);
-
+				 
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
+				
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,11 +65,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		return jwt.getSubject();
 	}
 
-	private Set<GrantedAuthority> extractAuthorities(Jwt jwt) {
+	private Set<GrantedAuthority> extractAuthorities(String token) {
 
+		Jwt jwt = jwtDecoder.decode(token);
 		String roles = jwt.getClaimAsString("roles");
 		return Arrays.stream(roles.split(",")).map(role -> new SimpleGrantedAuthority(role))
 				.collect(Collectors.toSet());
+		
 	}
+	
+	
 
 }
