@@ -39,7 +39,7 @@ public class LoginController {
 			try {
 				Authentication authentication = authenticationManager
 						.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
+				
 				String jwt = jwtService.generateToken(authentication);
 
 				return ResponseEntity.ok(jwt);

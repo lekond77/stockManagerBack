@@ -26,22 +26,28 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+	
 	@Autowired
 	private JwtAuthFilter jwtFilter;
-
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults())
+		return http
+				.csrf(csrf -> csrf.disable())
+				.cors(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth.requestMatchers("/", "/login").permitAll()
 						.requestMatchers("/produits").hasAnyRole("USER", "ADMIN", "SUPER_ADMIN")
 						.requestMatchers(PUT, "/produit/{id}").hasAnyRole("ADMIN", "SUPER_ADMIN")
 						.requestMatchers(POST, "/produit").hasAnyRole("ADMIN", "SUPER_ADMIN")
 						.requestMatchers(DELETE, "/produit/{id}").hasAuthority("ROLE_SUPER_ADMIN")
-						.requestMatchers("/error").permitAll().anyRequest().authenticated())
+						.requestMatchers("/error").permitAll()
+						.anyRequest().authenticated())
 				.httpBasic(Customizer.withDefaults())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-				.logout(logout -> logout.clearAuthentication(true).permitAll()).build();
+				
+				.logout(logout -> logout.clearAuthentication(true).permitAll())
+				.build();
 
 	}
 
